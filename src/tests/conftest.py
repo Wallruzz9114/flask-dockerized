@@ -1,5 +1,5 @@
 import pytest
-from src import app, db
+from src import create_app, db
 
 # Fixtures are reusable objects for tests. They have a scope associated with them,
 # which indicates how often the fixture is invoked:
@@ -12,6 +12,7 @@ from src import app, db
 
 @pytest.fixture(scope="module")
 def test_app():
+    app = create_app()
     app.config.from_object("src.config.TestingConfig")
     with app.app_context():
         yield app  # Testing happens here
