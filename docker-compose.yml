@@ -1,8 +1,14 @@
 # This config will create a service called api from the Dockerfile.
 
-# The volume is used to mount the code into the container. This is a must for a development environment in order to update the container whenever a change to the source code is made. Without this, you would have to re-build the image each time you make a change to the code.
+# The volume is used to mount the code into the container.
+# This is a must for a development environment in order to update the container
+# whenever a change to the source code is made. Without this,
+# you would have to re-build the image each time you make a change to the code.
 
-#Take note of the Docker compose file version used -- 3.8. Keep in mind that this version does not directly relate back to the version of Docker Compose installed; it simply specifies the file format that you want to use.
+# Take note of the Docker compose file version used -- 3.8.
+# Keep in mind that this version does not directly relate back
+# to the version of Docker Compose installed; it simply specifies
+# the file format that you want to use.
 
 version: "3.8"
 

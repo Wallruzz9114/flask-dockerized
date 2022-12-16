@@ -30,7 +30,7 @@ class User(db.Model):
 
 class Ping(Resource):
     def get(self):
-        return {"status": "success", "message": "ping"}
+        return {"status": "success", "message": "pong"}
 
 
 api.add_resource(Ping, "/ping")
