@@ -2,6 +2,7 @@ import json
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
 from src.api.models import User
 
 

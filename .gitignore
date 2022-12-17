@@ -81,6 +81,7 @@ docs/_build/
 oasis
 
 env
+htmlcov
 
 pyvenv.cfg
 
