@@ -14,5 +14,12 @@ def recreate_db():
     db.session.commit()
 
 
+@cli.command("seed_db")
+def seed_db():
+    db.session.add(User(username="jpinto", email="jpinto@flask.com"))
+    db.session.add(User(username="hpinto", email="hpinto@flask.com"))
+    db.session.commit()
+
+
 if __name__ == "__main__":
     cli()

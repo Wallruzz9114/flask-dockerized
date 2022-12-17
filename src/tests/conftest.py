@@ -1,5 +1,6 @@
 import pytest
 from src import create_app, db
+from src.api.models import User
 
 # Fixtures are reusable objects for tests. They have a scope associated with them,
 # which indicates how often the fixture is invoked:
@@ -18,13 +19,20 @@ def test_app():
         yield app  # Testing happens here
 
 
-# In essence, all code before the yield statement serves as setup code
-# while everything after serves as the teardown.
-
-
 @pytest.fixture(scope="module")
 def test_database():
     db.create_all()
     yield db  # Testing happens here
     db.session.remove()
     db.drop_all()
+
+
+@pytest.fixture(scope="function")
+def create_user():
+    def _add_user(username: str, email: str):
+        user = User(username=username, email=email)
+        db.session.add(user)
+        db.session.commit()
+        return user
+
+    return _add_user
