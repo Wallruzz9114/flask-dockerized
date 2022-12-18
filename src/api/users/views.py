@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 from flask_restx import Api, Resource, fields
 
-from src.api.crud import (create_user, delete_user, get_all_users,
-                          get_user_by_email, get_user_by_id, update_user)
+from src.api.users.crud import (create_user, delete_user, get_all_users,
+                                get_user_by_email, get_user_by_id, update_user)
 
 users_blueprint = Blueprint("users", __name__)
 api = Api(users_blueprint)

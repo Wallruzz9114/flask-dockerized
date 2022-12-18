@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from sqlalchemy.sql import func
@@ -18,3 +19,10 @@ class User(db.Model):
     def __init__(self, username: str, email: str):
         self.username = username
         self.email = email
+
+
+if os.getenv("FLASK_ENV") == "development":
+    from src import admin
+    from src.api.users.admin import UserAdminView
+
+    admin.add_view(UserAdminView(User, db.session))

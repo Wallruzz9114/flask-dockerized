@@ -1,7 +1,7 @@
 import pytest
 
 from src import create_app, db
-from src.api.models import User
+from src.api.users.models import User
 
 # Fixtures are reusable objects for tests. They have a scope associated with them,
 # which indicates how often the fixture is invoked:
