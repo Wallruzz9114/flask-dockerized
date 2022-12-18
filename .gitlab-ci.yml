@@ -35,6 +35,10 @@ test:
     POSTGRES_PASSWORD: runner
     DATABASE_TEST_URL: postgresql://runner:runner@postgres:5432/users
   script:
+    - python3.10 -m venv env
+    - source env/bin/activate
+    - pip install -r requirements.txt
+    - pip install black==22.12.0 flake8==4.0.1 isort==5.10.1 pytest==7.2.0
     - pytest "src/tests" -p no:warnings
     - flake8 src
     - black src --check
@@ -46,7 +50,7 @@ deploy:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
-    HEROKU_APP_NAME: <APP_NAME>
+    HEROKU_APP_NAME: boiling-waters-04008
     HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
   script:
     - apk add --no-cache curl

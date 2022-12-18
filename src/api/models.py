@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy.sql import func
+
 from src import db
 
 

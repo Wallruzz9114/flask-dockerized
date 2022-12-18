@@ -2,8 +2,9 @@ import json
 from datetime import datetime
 
 import pytest
-import src.api.users
 from flask import Flask
+
+import src.api.users
 
 
 def test_add_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
