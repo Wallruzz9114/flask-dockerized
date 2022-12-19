@@ -4,6 +4,7 @@ import os
 import jwt
 from flask import current_app
 from sqlalchemy.sql import func
+
 from src import bcrypt, db
 
 
