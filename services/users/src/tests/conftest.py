@@ -30,10 +30,10 @@ def test_database():
 
 @pytest.fixture(scope="function")
 def create_user():
-    def _add_user(username: str, email: str):
-        user = User(username=username, email=email)
+    def _create_user(username: str, email: str, password: str):
+        user = User(username=username, email=email, password=password)
         db.session.add(user)
         db.session.commit()
         return user
 
-    return _add_user
+    return _create_user

@@ -1,9 +1,10 @@
 import os
 from datetime import datetime
 
+from flask import current_app
 from sqlalchemy.sql import func
 
-from src import db
+from src import bcrypt, db
 
 
 class User(db.Model):
@@ -13,16 +14,20 @@ class User(db.Model):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username: str = db.Column(db.String(128), nullable=False)
     email: str = db.Column(db.String(128), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     active: bool = db.Column(db.Boolean(), default=True, nullable=False)
     created_date: datetime = db.Column(db.DateTime, default=func.now(), nullable=False)
 
-    def __init__(self, username: str, email: str):
+    def __init__(self, username: str, email: str, password: str):
         self.username = username
         self.email = email
+        self.password = bcrypt.generate_password_hash(
+            password, current_app.config.get("BCRYPT_LOG_ROUNDS")
+        ).decode()
 
 
 if os.getenv("FLASK_ENV") == "development":
     from src import admin
-    from src.api.users.admin import UserAdminView
+    from src.api.users.admin import UsersAdminView
 
-    admin.add_view(UserAdminView(User, db.session))
+    admin.add_view(UsersAdminView(User, db.session))

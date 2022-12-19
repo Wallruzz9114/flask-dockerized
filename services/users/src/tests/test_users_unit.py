@@ -11,7 +11,7 @@ def test_add_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
     def mock_get_user_by_email(email: str):
         return None
 
-    def mock_create_user(username: str, email: str):
+    def mock_create_user(username: str, email: str, password: str):
         return True
 
     monkeypatch.setattr(
@@ -22,7 +22,13 @@ def test_add_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
     client = test_app.test_client()
     response = client.post(
         "/users",
-        data=json.dumps({"username": "jpinto", "email": "jpinto@flask.com"}),
+        data=json.dumps(
+            {
+                "username": "jpinto",
+                "email": "jpinto@flask.com",
+                "password": "password123",
+            }
+        ),
         content_type="application/json",
     )
     data = json.loads(response.data.decode())
@@ -61,7 +67,7 @@ def test_add_user_duplicate_email(test_app: Flask, monkeypatch: pytest.MonkeyPat
     def mock_get_user_by_email(email: str):
         return True
 
-    def mock_create_user(username: str, email: str):
+    def mock_create_user(username: str, email: str, password: str):
         return True
 
     monkeypatch.setattr(
@@ -72,7 +78,13 @@ def test_add_user_duplicate_email(test_app: Flask, monkeypatch: pytest.MonkeyPat
     client = test_app.test_client()
     response = client.post(
         "/users",
-        data=json.dumps({"username": "jpinto", "email": "jpinto@flask.com"}),
+        data=json.dumps(
+            {
+                "username": "jpinto",
+                "email": "jpinto@flask.com",
+                "password": "password123",
+            }
+        ),
         content_type="application/json",
     )
     data = json.loads(response.data.decode())
@@ -85,8 +97,8 @@ def test_single_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
     def mock_get_user_by_id(user_id: int):
         return {
             "id": 1,
-            "username": "jeffrey",
-            "email": "jeffrey@testdriven.io",
+            "username": "jpinto",
+            "email": "jpinto@flask.com",
             "created_date": datetime.now(),
         }
 
@@ -96,8 +108,9 @@ def test_single_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
-    assert "jeffrey" in data["username"]
-    assert "jeffrey@testdriven.io" in data["email"]
+    assert "jpinto" in data["username"]
+    assert "jpinto@flask.com" in data["email"]
+    assert "password" not in data
 
 
 def test_single_user_incorrect_id(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
@@ -141,6 +154,8 @@ def test_all_users(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
     assert "jpinto@flask.com" in data[0]["email"]
     assert "hpinto" in data[1]["username"]
     assert "hpinto@flask.com" in data[1]["email"]
+    assert "password" not in data[0]
+    assert "password" not in data[1]
 
 
 def test_remove_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
@@ -155,7 +170,7 @@ def test_remove_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
             {
                 "id": 1,
                 "username": "user-to-be-removed",
-                "email": "remove-me@testdriven.io",
+                "email": "remove-me@flask.com",
             }
         )
         return d
@@ -170,7 +185,7 @@ def test_remove_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
     data = json.loads(response_two.data.decode())
 
     assert response_two.status_code == 200
-    assert "remove-me@testdriven.io was removed!" in data["message"]
+    assert "remove-me@flask.com was removed!" in data["message"]
 
 
 def test_remove_user_incorrect_id(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
@@ -194,7 +209,7 @@ def test_update_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
 
     def mock_get_user_by_id(user_id: int):
         d = AttrDict()
-        d.update({"id": 1, "username": "me", "email": "me@testdriven.io"})
+        d.update({"id": 1, "username": "me", "email": "me@flask.com"})
         return d
 
     def mock_update_user(user, username, email):
@@ -211,7 +226,7 @@ def test_update_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
     client = test_app.test_client()
     response_one = client.put(
         "/users/1",
-        data=json.dumps({"username": "me", "email": "me@testdriven.io"}),
+        data=json.dumps({"username": "me", "email": "me@flask.com"}),
         content_type="application/json",
     )
     data = json.loads(response_one.data.decode())
@@ -224,17 +239,17 @@ def test_update_user(test_app: Flask, monkeypatch: pytest.MonkeyPatch):
 
     assert resp_two.status_code == 200
     assert "me" in data["username"]
-    assert "me@testdriven.io" in data["email"]
+    assert "me@flask.com" in data["email"]
 
 
 @pytest.mark.parametrize(
     "user_id, payload, status_code, message",
     [
         [1, {}, 400, "Input payload validation failed"],
-        [1, {"email": "me@testdriven.io"}, 400, "Input payload validation failed"],
+        [1, {"email": "me@flask.com"}, 400, "Input payload validation failed"],
         [
             999,
-            {"username": "me", "email": "me@testdriven.io"},
+            {"username": "me", "email": "me@flask.com"},
             404,
             "User 999 does not exist",
         ],
@@ -272,7 +287,7 @@ def test_update_user_duplicate_email(test_app: Flask, monkeypatch: pytest.Monkey
 
     def mock_get_user_by_id(user_id: int):
         d = AttrDict()
-        d.update({"id": 1, "username": "me", "email": "me@testdriven.io"})
+        d.update({"id": 1, "username": "me", "email": "me@flask.com"})
         return d
 
     def mock_update_user(user, username, email):
@@ -289,7 +304,7 @@ def test_update_user_duplicate_email(test_app: Flask, monkeypatch: pytest.Monkey
     client = test_app.test_client()
     response = client.put(
         "/users/1",
-        data=json.dumps({"username": "me", "email": "me@testdriven.io"}),
+        data=json.dumps({"username": "me", "email": "me@flask.com"}),
         content_type="application/json",
     )
     data = json.loads(response.data.decode())
